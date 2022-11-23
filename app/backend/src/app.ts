@@ -1,5 +1,5 @@
 import * as express from 'express';
-import AuthController from './controllers/AuthController';
+import routers from './routers';
 
 class App {
   public app: express.Express;
@@ -11,7 +11,7 @@ class App {
 
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
-    this.app.post('/login', AuthController.login);
+    this.app.use(routers);
   }
 
   private config():void {

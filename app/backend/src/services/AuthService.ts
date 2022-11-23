@@ -1,8 +1,10 @@
 import Joi = require('joi');
 import bcrypt = require ('bcryptjs');
 import jwt = require('jsonwebtoken');
+import ILogin from '../entities/ILogin';
 import IUser from '../entities/IUser';
 import Users from '../database/models/Users';
+import 'dotenv/config';
 
 export const validateBody = (params: IUser) => {
   const userSchema = Joi.object({
@@ -13,8 +15,11 @@ export const validateBody = (params: IUser) => {
   if (error) return { type: 400, message: 'All fields must be filled' };
   return { type: 200 };
 };
-export const createToken = (data: IUser) => {
-  const token = jwt.sign({ data }, 'jwt_secret', {
+
+const secret = process.env.JWT_SECRET || '';
+
+const createToken = (data: IUser) => {
+  const token = jwt.sign({ data }, secret, {
     expiresIn: '1d',
     algorithm: 'HS256',
   });
@@ -22,11 +27,10 @@ export const createToken = (data: IUser) => {
   return token;
 };
 
-export const validateLogin = async (userBody: IUser) => {
-  // SELECT * FROM USERS WHERE EMAIL = XXXXX
+export const validateLogin = async (userBody: ILogin) => {
   const { email, password } = userBody;
   const user = await Users.findOne({
-    attributes: ['id', 'email', 'password'],
+    attributes: ['id', 'email', 'role', 'username'],
     where: { email } });
   if (!user) {
     return { type: 401, message: 'Incorrect email or password' };
@@ -35,8 +39,7 @@ export const validateLogin = async (userBody: IUser) => {
     if (!result) {
       return { type: 401, message: 'Incorrect email or password' };
     }
-    const { password: _, ...userWithoutPassword } = user.dataValues;
-    const token = createToken(userWithoutPassword);
-    return { token };
+    const token = createToken(user.dataValues());
+    return { type: 200, message: token };
   });
 };
