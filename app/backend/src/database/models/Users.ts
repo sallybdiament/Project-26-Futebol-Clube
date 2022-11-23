@@ -21,7 +21,7 @@ Users.init({
     type: STRING(30),
   },
   role: {
-    allowNull: true,
+    allowNull: false,
     type: STRING(30),
   },
   email: {
