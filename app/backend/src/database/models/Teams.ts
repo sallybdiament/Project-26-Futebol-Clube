@@ -28,20 +28,20 @@ Teams.init({
 });
 
 Teams.hasMany(Matches, {
-  as: 'matches',
+  as: 'matcheshometeam',
   foreignKey: 'home_team',
 });
 Teams.hasMany(Matches, {
-  as: 'matches',
+  as: 'matchesawayteam',
   foreignKey: 'away_team',
 });
 
 Matches.belongsTo(Teams, {
-  as: 'teams',
+  as: 'hometeam',
   foreignKey: 'homeTeam',
 });
 Matches.belongsTo(Teams, {
-  as: 'teams',
+  as: 'awayteam',
   foreignKey: 'awayTeam',
 });
 
