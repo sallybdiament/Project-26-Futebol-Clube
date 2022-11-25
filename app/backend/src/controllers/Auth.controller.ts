@@ -27,7 +27,6 @@ const login = async (req: Request, res: Response) => {
   if (result?.type === 401) {
     return res.status(401).json({ message: 'Incorrect email or password' });
   }
-  console.log(result);
   return res.status(200).json({ token: result.type });
 };
 // }
