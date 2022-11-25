@@ -1,11 +1,17 @@
 import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
 
-const findAllMatchesService = async () => Matches.findAll({
+export const findAllMatchesService = async () => Matches.findAll({
   include: [
     { model: Teams, as: 'teamHome', attributes: ['teamName'] },
     { model: Teams, as: 'teamAway', attributes: { exclude: ['id'] } },
   ],
 });
 
-export default findAllMatchesService;
+export const inProgressMatchesService = async (query: boolean) => Matches.findAll({
+  where: { inProgress: query },
+  include: [
+    { model: Teams, as: 'teamHome', attributes: ['teamName'] },
+    { model: Teams, as: 'teamAway', attributes: { exclude: ['id'] } },
+  ],
+});
