@@ -20,7 +20,7 @@ const login = async (req: Request, res: Response) => {
   const auth = validateBody(userInfo);
   if (auth.type === 400) {
     return res.status(auth.type).json({
-      message: 'Some required fields are missing',
+      message: 'All fields must be filled',
     });
   }
   const result = await validateLogin(req.body);
