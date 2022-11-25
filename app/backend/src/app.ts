@@ -8,11 +8,15 @@ class App {
     this.app = express();
 
     this.config();
-
+    // this.routes();
     // Não remover essa rota
     this.app.get('/', (req, res) => res.json({ ok: true }));
-    this.app.use(routers);
   }
+
+  // private routes(): void {
+  //   this.app.use('/', routers);
+  //   console.log('oi, teste routers');
+  // }
 
   private config():void {
     const accessControl: express.RequestHandler = (_req, res, next) => {
@@ -24,6 +28,7 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+    this.app.use('/login', routers);
   }
 
   public start(PORT: string | number):void {

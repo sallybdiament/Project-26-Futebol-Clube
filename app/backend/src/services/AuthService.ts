@@ -12,7 +12,7 @@ export const validateBody = (params: IUser) => {
     password: Joi.string().required(),
   });
   const { error } = userSchema.validate(params);
-  if (error) return { type: 400, message: 'All fields must be filled' };
+  if (error) return { type: 400 };
   return { type: 200 };
 };
 
@@ -30,16 +30,15 @@ const createToken = (data: IUser) => {
 export const validateLogin = async (userBody: ILogin) => {
   const { email, password } = userBody;
   const user = await Users.findOne({
-    attributes: ['id', 'email', 'role', 'username'],
     where: { email } });
   if (!user) {
-    return { type: 401, message: 'Incorrect email or password' };
+    return { type: 401 };
   }
-  bcrypt.compare(password, user.password, (err, result) => {
-    if (!result) {
-      return { type: 401, message: 'Incorrect email or password' };
-    }
-    const token = createToken(user.dataValues());
-    return { type: 200, message: token };
-  });
+  const match = await bcrypt.compare(password, user.password);
+  if (match) {
+    const { password: _, ...userWithoutPassword } = user.dataValues;
+    const token = createToken(userWithoutPassword);
+    return { type: token };
+  }
+  return { type: 401 };
 };
