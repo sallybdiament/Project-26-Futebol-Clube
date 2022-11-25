@@ -4,7 +4,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import {
   findAllMatchesService,
   inProgressMatchesService,
-  createNewMatchService } from '../services/matchesService';
+  createNewMatchService,
+  patchService } from '../services/matchesService';
 import validateToken from '../services/validateToken';
 
 export const findAllMatches = async (req: Request, res: Response) => {
@@ -23,7 +24,15 @@ export const createMatch = async (req: Request, res: Response) => {
   const token = req.header('Authorization') || '';
   const user = await validateToken(token) as JwtPayload;
   if (!user) { return res.status(401).json('Token não identificado.'); }
+
   const newTeam = req.body;
   const insertedNewMatch = await createNewMatchService(newTeam);
   return res.status(201).json(insertedNewMatch);
+};
+
+export const endMatch = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  console.log(id);
+  await patchService(Number(id));
+  return res.status(200).json({ message: 'Finished' });
 };

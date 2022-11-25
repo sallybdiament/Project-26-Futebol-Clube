@@ -23,3 +23,14 @@ export const createNewMatchService = async (newMatch: IMatch) => {
     homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress: true });
   return created.dataValues;
 };
+
+export const patchService = async (id: number) => {
+  try {
+    const updated = await Matches.update({ inProgress: false }, {
+      where: { id },
+    });
+    console.log(updated);
+  } catch (error) {
+    console.error();
+  }
+};
