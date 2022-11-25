@@ -1,7 +1,13 @@
 import { Request, Response } from 'express';
-import { findAllMatchesService, inProgressMatchesService } from '../services/matchesService';
+import { JwtPayload } from 'jsonwebtoken';
+// import IMatch from '../entities/IMatch';
+import {
+  findAllMatchesService,
+  inProgressMatchesService,
+  createNewMatchService } from '../services/matchesService';
+import validateToken from '../services/validateToken';
 
-const findAllMatches = async (req: Request, res: Response) => {
+export const findAllMatches = async (req: Request, res: Response) => {
   const { inProgress } = req.query;
   console.log(inProgress);
   const isTrueInProgress = (inProgress === 'true');
@@ -13,4 +19,11 @@ const findAllMatches = async (req: Request, res: Response) => {
   return res.status(200).json(allMatches);
 };
 
-export default findAllMatches;
+export const createMatch = async (req: Request, res: Response) => {
+  const token = req.header('Authorization') || '';
+  const user = await validateToken(token) as JwtPayload;
+  if (!user) { return res.status(401).json('Token não identificado.'); }
+  const newTeam = req.body;
+  const insertedNewMatch = await createNewMatchService(newTeam);
+  return res.status(201).json(insertedNewMatch);
+};

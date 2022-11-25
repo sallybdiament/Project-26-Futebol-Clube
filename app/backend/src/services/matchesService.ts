@@ -1,5 +1,6 @@
 import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
+import IMatch from '../entities/IMatch';
 
 export const findAllMatchesService = async () => Matches.findAll({
   include: [
@@ -15,3 +16,10 @@ export const inProgressMatchesService = async (query: boolean) => Matches.findAl
     { model: Teams, as: 'teamAway', attributes: { exclude: ['id'] } },
   ],
 });
+
+export const createNewMatchService = async (newMatch: IMatch) => {
+  const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = newMatch;
+  const created = await Matches.create({
+    homeTeam, awayTeam, homeTeamGoals, awayTeamGoals, inProgress: true });
+  return created.dataValues;
+};
