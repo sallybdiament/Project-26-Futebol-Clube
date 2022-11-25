@@ -26,10 +26,9 @@ export const createNewMatchService = async (newMatch: IMatch) => {
 
 export const patchService = async (id: number) => {
   try {
-    const updated = await Matches.update({ inProgress: false }, {
+    await Matches.update({ inProgress: false }, {
       where: { id },
     });
-    console.log(updated);
   } catch (error) {
     console.error();
   }

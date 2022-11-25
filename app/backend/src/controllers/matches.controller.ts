@@ -32,7 +32,6 @@ export const createMatch = async (req: Request, res: Response) => {
 
 export const endMatch = async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log(id);
   await patchService(Number(id));
   return res.status(200).json({ message: 'Finished' });
 };
