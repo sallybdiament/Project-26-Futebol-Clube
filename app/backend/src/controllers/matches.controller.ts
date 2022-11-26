@@ -5,7 +5,8 @@ import {
   findAllMatchesService,
   inProgressMatchesService,
   createNewMatchService,
-  patchService } from '../services/matchesService';
+  patchService,
+  updateGoalsService } from '../services/matchesService';
 import validateToken from '../services/validateToken';
 
 export const findAllMatches = async (req: Request, res: Response) => {
@@ -23,15 +24,22 @@ export const findAllMatches = async (req: Request, res: Response) => {
 export const createMatch = async (req: Request, res: Response) => {
   const token = req.header('Authorization') || '';
   const user = await validateToken(token) as JwtPayload;
-  if (!user) { return res.status(401).json('Token não identificado.'); }
+  if (!user) { return res.status(401).json('Token must be a valid token'); }
 
   const newTeam = req.body;
   const insertedNewMatch = await createNewMatchService(newTeam);
-  return res.status(201).json(insertedNewMatch);
+  return res.status(insertedNewMatch.type).json(insertedNewMatch.message);
 };
 
 export const endMatch = async (req: Request, res: Response) => {
   const { id } = req.params;
   await patchService(Number(id));
   return res.status(200).json({ message: 'Finished' });
+};
+
+export const updateGoals = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { homeTeamGoals, awayTeamGoals } = req.body;
+  await updateGoalsService(Number(id), homeTeamGoals, awayTeamGoals);
+  return res.status(200).json('Succefully updated');
 };
