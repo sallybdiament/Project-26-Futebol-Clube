@@ -24,7 +24,7 @@ export const findAllMatches = async (req: Request, res: Response) => {
 export const createMatch = async (req: Request, res: Response) => {
   const token = req.header('Authorization') || '';
   const user = await validateToken(token) as JwtPayload;
-  if (!user) { return res.status(401).json('Token must be a valid token'); }
+  if (!user) { return res.status(401).json({ message: 'Token must be a valid token' }); }
 
   const newTeam = req.body;
   const insertedNewMatch = await createNewMatchService(newTeam);
