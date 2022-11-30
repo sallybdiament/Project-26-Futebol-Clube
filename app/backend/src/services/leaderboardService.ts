@@ -17,7 +17,6 @@ export const allMatches = (match: IMatch, team: ITeam, properties: IProperties) 
   let {
     totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws,
   } = properties;
-  console.log(team.id, match.homeTeam);
   if (team.id === match.homeTeam) {
     totalGames += 1;
     goalsFavor += match.homeTeamGoals;
@@ -38,7 +37,6 @@ export const homeMatches = (match: IMatch, team: ITeam, properties: IProperties)
   let {
     totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws,
   } = properties;
-  console.log(team.id, match.homeTeam);
   if (team.id === match.homeTeam) {
     totalGames += 1;
     goalsFavor += match.homeTeamGoals;
@@ -98,9 +96,27 @@ export const completeLeaderboard = async (a: any) => {
 };
 
 export const leaderboardOrdered = async (array1: any) => {
-  const array = await completeLeaderboard(array1);
-  const sorted1 = array.sort((a, b) => b.totalVictories - a.totalVictories);
-  const sorted2 = sorted1.sort((a, b) => b.goalsBalance - a.goalsBalance);
-  const sorted3 = sorted2.sort((a, b) => b.goalsFavor - a.goalsFavor);
-  return sorted3.sort((a, b) => a.goalsOwn - b.goalsOwn);
+  const array = await completeLeaderboard(array1) || 0;
+  //   const sorted = array.sort((a, b) => {
+  //     if (b.goalsFavor === a.goalsFavor) {
+  //       return a.goalsOwn - b.goalsOwn;
+  //     }
+  //     if (b.goalsBalance === a.goalsBalance) {
+  //       return b.goalsFavor - a.goalsFavor;
+  //     }
+  //     if (b.totalVictories === a.totalVictories) {
+  //       return b.goalsBalance - a.goalsBalance;
+  //     }
+  //     if (b.totalPoints === a.totalPoints) {
+  //       return b.totalVictories - a.totalVictories;
+  //     }
+  //     return b.totalPoints - a.totalPoints;
+  //   })
+  const sorted = array.sort((a, b) => (
+    (b.totalPoints - a.totalPoints
+         || b.totalVictories - a.totalVictories
+         || b.goalsBalance - a.goalsBalance
+         || b.goalsFavor - a.goalsFavor
+         || a.goalsOwn - b.goalsOwn)));
+  return sorted;
 };

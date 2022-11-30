@@ -10,13 +10,9 @@ import { createMatch,
 import { getLeaderboard,
   getLeaderboardAway,
   getLeaderboardHome } from './controllers/leaderboard.controller';
-// import AuthController from './controllers/AuthController';
 
 const routers = Router();
 
-// const authController = new AuthController();
-
-// routers.post('/', (req: Request, res: Response) => authController.login(req, res));
 routers.post('/login', login);
 routers.get('/login/validate', validateRole);
 routers.get('/teams', findAllTeams);
