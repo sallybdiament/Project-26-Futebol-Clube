@@ -29,6 +29,7 @@ export const allMatches = (match: IMatch, team: ITeam, properties: IProperties) 
     goalsFavor += match.awayTeamGoals;
     goalsOwn += match.homeTeamGoals;
     if (match.homeTeamGoals < match.awayTeamGoals) totalVictories += 1;
+    if (match.homeTeamGoals === match.awayTeamGoals) totalDraws += 1;
   }
   return { totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws };
 };
@@ -97,21 +98,6 @@ export const completeLeaderboard = async (a: any) => {
 
 export const leaderboardOrdered = async (array1: any) => {
   const array = await completeLeaderboard(array1) || 0;
-  //   const sorted = array.sort((a, b) => {
-  //     if (b.goalsFavor === a.goalsFavor) {
-  //       return a.goalsOwn - b.goalsOwn;
-  //     }
-  //     if (b.goalsBalance === a.goalsBalance) {
-  //       return b.goalsFavor - a.goalsFavor;
-  //     }
-  //     if (b.totalVictories === a.totalVictories) {
-  //       return b.goalsBalance - a.goalsBalance;
-  //     }
-  //     if (b.totalPoints === a.totalPoints) {
-  //       return b.totalVictories - a.totalVictories;
-  //     }
-  //     return b.totalPoints - a.totalPoints;
-  //   })
   const sorted = array.sort((a, b) => (
     (b.totalPoints - a.totalPoints
          || b.totalVictories - a.totalVictories
