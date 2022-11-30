@@ -7,6 +7,7 @@ import { createMatch,
   findAllMatches,
   endMatch,
   updateGoals } from './controllers/matches.controller';
+import getLeaderboard from './controllers/leaderboard.controller';
 // import AuthController from './controllers/AuthController';
 
 const routers = Router();
@@ -22,5 +23,6 @@ routers.get('/matches', findAllMatches);
 routers.post('/matches', createMatch);
 routers.patch('/matches/:id', updateGoals);
 routers.patch('/matches/:id/finish', endMatch);
+routers.get('/leaderboard', getLeaderboard);
 
 export default routers;
