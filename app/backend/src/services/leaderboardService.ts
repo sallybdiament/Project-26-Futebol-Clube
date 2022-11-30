@@ -2,7 +2,10 @@ import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
 import IMatch from '../entities/IMatch';
 import ITeam from '../entities/ITeam';
-import IProperties from '../entities/IProperties';
+import {
+//     IAllProperties,
+//   IProperties2,
+  IProperties } from '../entities/IProperties';
 
 const getEndedMatches = () => Matches.findAll({
   where: { inProgress: false },
@@ -10,7 +13,7 @@ const getEndedMatches = () => Matches.findAll({
 
 const getTeams = () => Teams.findAll();
 
-const novafuncao = (match: IMatch, team: ITeam, properties: IProperties) => {
+export const allMatches = (match: IMatch, team: ITeam, properties: IProperties) => {
   let {
     totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws,
   } = properties;
@@ -31,7 +34,36 @@ const novafuncao = (match: IMatch, team: ITeam, properties: IProperties) => {
   return { totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws };
 };
 
-export const leaderboard = async () => {
+export const homeMatches = (match: IMatch, team: ITeam, properties: IProperties) => {
+  let {
+    totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws,
+  } = properties;
+  console.log(team.id, match.homeTeam);
+  if (team.id === match.homeTeam) {
+    totalGames += 1;
+    goalsFavor += match.homeTeamGoals;
+    goalsOwn += match.awayTeamGoals;
+    if (match.homeTeamGoals > match.awayTeamGoals) totalVictories += 1;
+    if (match.homeTeamGoals === match.awayTeamGoals) totalDraws += 1;
+  }
+  return { totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws };
+};
+
+export const awayMatches = (match: IMatch, team: ITeam, properties: IProperties) => {
+  let {
+    totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws,
+  } = properties;
+  if (team.id === match.awayTeam) {
+    totalGames += 1;
+    goalsFavor += match.awayTeamGoals;
+    goalsOwn += match.homeTeamGoals;
+    if (match.awayTeamGoals > match.homeTeamGoals) totalVictories += 1;
+    if (match.homeTeamGoals === match.awayTeamGoals) totalDraws += 1;
+  }
+  return { totalGames, goalsFavor, goalsOwn, totalVictories, totalDraws };
+};
+
+export const leaderboard = async (locationTeams: any) => {
   const teams = await getTeams();
   const endedMatches = await getEndedMatches();
   return teams.map((team) => {
@@ -39,14 +71,14 @@ export const leaderboard = async () => {
       totalGames: 0, goalsFavor: 0, goalsOwn: 0, totalVictories: 0, totalDraws: 0,
     };
     endedMatches.forEach((match) => {
-      properties = novafuncao(match, team, properties);
+      properties = locationTeams(match, team, properties);
     });
     return { name: team.teamName, ...properties };
   });
 };
 
-export const completeLeaderboard = async () => {
-  const array = await leaderboard();
+export const completeLeaderboard = async (a: any) => {
+  const array = await leaderboard(a);
   let totalPoints = 0;
   let totalLosses = 0;
   let goalsBalance = 0;
@@ -65,8 +97,8 @@ export const completeLeaderboard = async () => {
   });
 };
 
-export const leaderboardOrdered = async () => {
-  const array = await completeLeaderboard();
+export const leaderboardOrdered = async (array1: any) => {
+  const array = await completeLeaderboard(array1);
   const sorted1 = array.sort((a, b) => b.totalVictories - a.totalVictories);
   const sorted2 = sorted1.sort((a, b) => b.goalsBalance - a.goalsBalance);
   const sorted3 = sorted2.sort((a, b) => b.goalsFavor - a.goalsFavor);

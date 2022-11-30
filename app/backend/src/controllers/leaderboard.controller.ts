@@ -1,12 +1,19 @@
 import { Request, Response } from 'express';
-// import leaderboard from '../services/leaderboardService';
-// import { leaderboard, leaderboardSequelize } from '../services/leaderboardService';
-import { completeLeaderboard } from '../services/leaderboardService';
+import { leaderboardOrdered,
+  allMatches,
+  homeMatches,
+  awayMatches } from '../services/leaderboardService';
 
-const getLeaderboard = async (_req: Request, res: Response) => {
-  const allMatches = await completeLeaderboard();
-  //   const test = await leaderboardSequelize();
-  return res.status(200).json(allMatches);
+export const getLeaderboard = async (_req: Request, res: Response) => {
+  const all = await leaderboardOrdered(allMatches);
+  return res.status(200).json(all);
 };
 
-export default getLeaderboard;
+export const getLeaderboardHome = async (_req: Request, res: Response) => {
+  const home = await leaderboardOrdered(homeMatches);
+  return res.status(200).json(home);
+};
+export const getLeaderboardAway = async (_req: Request, res: Response) => {
+  const away = await leaderboardOrdered(awayMatches);
+  return res.status(200).json(away);
+};
