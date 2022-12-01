@@ -1,8 +1,8 @@
-import { Router } from 'express';
-//  , Response, Request
+import { Router, Response, Request } from 'express';
 import login from './controllers/Auth.controller';
 import validateRole from './controllers/validateToken.controller.';
-import { findAllTeams, findOneTeam } from './controllers/teams.controller';
+// import { findAllTeams, findOneTeam } from './controllers/TeamsController';
+import TeamController from './controllers/TeamsController';
 import { createMatch,
   findAllMatches,
   endMatch,
@@ -15,8 +15,10 @@ const routers = Router();
 
 routers.post('/login', login);
 routers.get('/login/validate', validateRole);
-routers.get('/teams', findAllTeams);
-routers.get('/teams/:id', findOneTeam);
+// routers.get('/teams', findAllTeams);
+// routers.get('/teams/:id', findOneTeam);
+routers.get('/teams', (req: Request, res: Response) => TeamController.findAllTeams(req, res));
+routers.get('/teams/:id', (req: Request, res: Response) => TeamController.findOneTeam(req, res));
 routers.get('/matches', findAllMatches);
 routers.post('/matches', createMatch);
 routers.patch('/matches/:id', updateGoals);

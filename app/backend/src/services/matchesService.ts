@@ -1,7 +1,8 @@
 import Teams from '../database/models/Teams';
 import Matches from '../database/models/Matches';
 import IMatch from '../entities/IMatch';
-import { findTeamByIdService } from './teamService';
+// import { findTeamByIdService } from './TeamService';
+import TeamService from './teamService';
 
 export const findAllMatchesService = async () => Matches.findAll({
   include: [
@@ -25,8 +26,10 @@ export const createNewMatchService = async (newMatch: IMatch) => {
       message: {
         message: 'It is not possible to create a match with two equal teams' } };
   }
-  const homeTeamExist = await findTeamByIdService(Number(homeTeam));
-  const awayTeamExist = await findTeamByIdService(Number(awayTeam));
+  // const homeTeamExist = await findTeamByIdService(Number(homeTeam));
+  // const awayTeamExist = await findTeamByIdService(Number(awayTeam));
+  const homeTeamExist = await TeamService.findTeamById(Number(homeTeam));
+  const awayTeamExist = await TeamService.findTeamById(Number(awayTeam));
   if (!homeTeamExist || !awayTeamExist) {
     return { type: 404,
       message: {
